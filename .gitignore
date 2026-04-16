@@ -1,0 +1,22 @@
+# Terraform core
+.terraform/
+*.tfstate
+*.tfstate.*
+crash.log
+
+# Variable files (can contain secrets)
+*.tfvars
+*.tfvars.json
+
+# Override files (rare but used in teams)
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# CLI config files
+.terraformrc
+terraform.rc
+
+# MacOS
+.DS_Store
