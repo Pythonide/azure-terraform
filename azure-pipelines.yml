@@ -7,38 +7,29 @@ pr:
 pool:
   vmImage: 'ubuntu-latest'
 
-variables:
-  TF_VERSION: '1.6.0'
+steps:
+- checkout: self
 
-stages:
+# Install Terraform
+- script: |
+    curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
+    sudo apt-add-repository "deb https://apt.releases.hashicorp.com $(lsb_release -cs) main"
+    sudo apt-get update && sudo apt-get install terraform -y
+  displayName: Install Terraform
 
-- stage: TerraformPlan
-  displayName: "Terraform Plan"
-  jobs:
-  - job: Plan
-    steps:
+# Azure Login (THIS IS CRITICAL)
+- task: AzureCLI@2
+  inputs:
+    azureSubscription: 'terraform-sp'
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      echo "Logged into Azure"
 
-    - checkout: self
+# Terraform Init
+- script: terraform init
+  displayName: Terraform Init
 
-    - task: TerraformInstaller@1
-      inputs:
-        terraformVersion: $(TF_VERSION)
-
-    - task: TerraformTaskV4@4
-      displayName: Terraform Init
-      inputs:
-        provider: 'azurerm'
-        command: 'init'
-        backendServiceArm: 'terraform-sp'
-        backendAzureRmResourceGroupName: 'tfstate-rg'
-        backendAzureRmStorageAccountName: 'tfstatekaustav123'
-        backendAzureRmContainerName: 'tfstate'
-        backendAzureRmKey: 'dev.tfstate'
-
-    - task: TerraformTaskV4@4
-      displayName: Terraform Plan
-      inputs:
-        provider: 'azurerm'
-        command: 'plan'
-        environmentServiceNameAzureRM: 'terraform-sp'
-        commandOptions: '-var-file=terraform.tfvars'
+# Terraform Plan
+- script: terraform plan -var-file=terraform.tfvars
+  displayName: Terraform Plan
