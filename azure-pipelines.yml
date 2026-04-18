@@ -30,4 +30,7 @@ steps:
 # Terraform Plan
 - script: |
     terraform plan -input=false
-  displayName: "Terraform Plan"
+    displayName: "Terraform Plan"
+  env:
+    TF_VAR_subscription_id: $(AZURE_SUBSCRIPTION_ID)
+    TF_VAR_admin_password: $(ADMIN_PASSWORD)
