@@ -41,22 +41,8 @@ jobs:
         tenant-id: ${{ secrets.AZURE_TENANT_ID }}
         subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-    - name: Debug environment variables
-      run: |
-        echo "---- ALL ENV VARIABLES ----"
-        env | sort
-
-        echo "---- FILTERED TF_VAR ----"
-        env | grep TF_VAR || true
-
-        echo "---- FILTERED ARM ----"
-        env | grep ARM_ || true
-
     - name: Terraform Init
       run: terraform init -input=false
 
-    - name: Terraform Plan (debug)
-      run: |
-        echo "Checking TF_VAR_subscription_id before Terraform"
-        env | grep TF_VAR_subscription_id || echo "TF_VAR_subscription_id NOT FOUND"
-        terraform plan -input=false
+    - name: Terraform Plan
+      run: terraform plan -input=false
