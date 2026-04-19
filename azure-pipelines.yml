@@ -2,9 +2,17 @@ trigger:
 - main
 
 pool:
+<<<<<<< Updated upstream
   name: Default   # uses your self-hosted agent
 
 variables:
+=======
+  name: Default
+
+variables:
+  PATH: /usr/local/bin:/usr/bin:/bin
+
+>>>>>>> Stashed changes
   TF_VAR_resource_group_name: Terraform_RG
   TF_VAR_location: centralindia
   TF_VAR_vm_size: Standard_DC4s_v3
@@ -13,6 +21,7 @@ variables:
 
 steps:
 - script: |
+<<<<<<< Updated upstream
     echo "Running on self-hosted agent"
     uname -a
   displayName: "Verify Agent"
@@ -31,6 +40,25 @@ steps:
 - script: |
     terraform plan -input=false
     displayName: "Terraform Plan"
+=======
+    echo "Checking environment"
+    echo $PATH
+    which terraform
+    which az
+  displayName: "Debug PATH"
+
+- script: |
+    terraform version
+  displayName: "Terraform Version"
+
+- script: |
+    terraform init -input=false -upgrade
+  displayName: "Terraform Init"
+
+- script: |
+    terraform plan -input=false
+  displayName: "Terraform Plan"
+>>>>>>> Stashed changes
   env:
     TF_VAR_subscription_id: $(AZURE_SUBSCRIPTION_ID)
     TF_VAR_admin_password: $(ADMIN_PASSWORD)
