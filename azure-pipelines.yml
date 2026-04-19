@@ -2,34 +2,22 @@ trigger:
 - main
 
 pool:
-  name: Default   # self-hosted agent
+  name: Default
 
 variables:
-- group: terraform-vars   # <-- your Variable Group in Azure DevOps
-
-  # non-secret configuration
-  TF_VAR_resource_group_name: Terraform_RG
-  TF_VAR_location: centralindia
-  TF_VAR_vm_size: Standard_DC4s_v3
+- group: terraform-vars
 
 steps:
 - script: |
     echo "Checking environment"
-    echo $PATH
     which terraform
     which az
   displayName: "Debug Environment"
 
-- script: |
-    terraform version
-  displayName: "Terraform Version"
-
-- script: |
-    terraform init -input=false -upgrade
+- script: terraform init -input=false -upgrade
   displayName: "Terraform Init"
 
-- script: |
-    terraform plan -input=false
+- script: terraform plan -input=false
   displayName: "Terraform Plan"
   env:
     TF_VAR_subscription_id: $(AZURE_SUBSCRIPTION_ID)
